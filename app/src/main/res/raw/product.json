@@ -1,0 +1,109 @@
+{
+  "product": [
+    {
+      "id": "1",
+      "name": "Basundi",
+      "dis": [
+        "Amul Basundi Kesar Elaichi 12*1 ltr Tp"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Butter",
+      "dis": [
+        "Amul Butter 150*100Gm"
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Chocolate",
+      "dis": [
+        "Amul Milk Chocolate 18*2*35Gm"
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Fresh Paneer",
+      "dis": [
+        "Amul Fresh Paneer Block 30*200Gm",
+        "Amul Fresh Paneer Block 90*100Gm"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Frozen Potato Prodct",
+      "dis": [
+        "Amul Happy Treats French Fries 40*200Gm",
+        "Amul Happy Treats French Fries 26*425Gm"
+      ]
+    }
+  ,
+    {
+      "id": "6",
+      "name": "Frozen Sweets",
+      "dis": [
+        "Frozen Sweets Ras Malai Pista 24*500Gm"
+      ]
+    }
+  ,
+    {
+      "id": "7",
+      "name": "Frozen Potato Prodct",
+      "dis": [
+        "IC BP Black Currant 5 lit.(1*6)",
+        "IC BP Pan Nawaabi 5 lit.(1*6)"
+      ]
+    }
+  ,
+    {
+      "id": "8",
+      "name": "IC Combo Pack",
+      "dis": [
+        "IC Combo Afghan Dry Fr.750ml((1+1f)*19)",
+        "IC Combo Al.Mango 750ml((1+1f)*19)",
+        "IC Combo American Nuts 750ml(1*40)",
+        "IC Combo Butter Scotch 750ml((1+1f)*19)",
+        "IC Combo Choco Chips 750ml((1+1f)*19)",
+        "IC Combo Raj Bhog 750ml((1+1f)*19)",
+        "IC Combo Rose Cashew 750ml(1*40)",
+        "IC Combo Shahi. Pis Kul 750ml((1+1f)*19)"
+      ]
+    }
+  ,
+    {
+      "id": "9",
+      "name": "IC Party Pack",
+      "dis": [
+        "IC PP Choco Chips 1.25 lit.(1*25)",
+        "IC PP Rajbhog 1 lit.(1*18)",
+        "IC PP Vanilla 1.25 lit.(1*25)",
+        "IC PP vanilla Royale 2 lit.(1*15)"
+      ]
+    }
+  ,
+    {
+      "id": "10",
+      "name": "Sticks ICRM",
+      "dis": [
+        "IC STK Choco Stix Kulfi 60ml (20*8)",
+        "IC STK Frostik 70ml (20*8)"
+      ]
+    }
+  ,
+    {
+      "id": "11",
+      "name": "Sugar Free ICRM",
+      "dis": [
+        "IC Sugar Free Vanilla 125ml(8*9)"
+      ]
+    }
+  ,
+    {
+      "id": "12",
+      "name": "Sundae ICRM",
+      "dis": [
+        "IC Sundae Chocolate 125ml(4*10)"
+      ]
+    }
+  ]
+}
