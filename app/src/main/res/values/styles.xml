@@ -19,4 +19,17 @@
         <item name="android:paddingRight">15dp</item>
     </style>
 
+
+    <style name="AppAlertDialog" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowTitleStyle">@style/TitleDialogTextStyle</item>
+    </style>
+
+    <style name="TitleDialogTextStyle" parent="@style/Base.DialogWindowTitle.AppCompat">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
 </resources>

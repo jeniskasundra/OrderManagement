@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OrderManagement</string>
+    <string name="app_name">Order Management</string>
 
     <string-array name="proname">
         <item>Basudi</item>
