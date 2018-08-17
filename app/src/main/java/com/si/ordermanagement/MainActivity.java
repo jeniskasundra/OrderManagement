@@ -1,5 +1,6 @@
 package com.si.ordermanagement;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +21,8 @@ import com.google.gson.Gson;
 import com.si.ordermanagement.model.OrderData;
 import com.si.ordermanagement.model.Product;
 import com.si.ordermanagement.model.ProductModel;
+import com.si.ordermanagement.permission.MarshMallowPermission;
+import com.si.ordermanagement.permission.MarshMallowPermissionListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,11 +49,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        checkPermission();
         bindView();
         init();
         setAdapters();
         addListner();
+    }
+
+    private void checkPermission()
+    {
+        MarshMallowPermissionListener permissionlistener = new MarshMallowPermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(MainActivity.this, "MarshMallowPermission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
+        new MarshMallowPermission(MainActivity.this)
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [MarshMallowPermission]")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
     }
 
     private void init() {
