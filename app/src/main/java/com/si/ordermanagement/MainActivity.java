@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText edtQuantity;
     private Button btnAddItem, btnNext;
     private ArrayAdapter adapterSpnName, adapterSpnDis;
-    private String pName="",pDis="",pQty="";
-    private int orderCount=0;
+    private String pName = "", pDis = "", pQty = "";
+    private int orderCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +51,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkPermission();
         bindView();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        orderCount = 0;
+        pName = ""; pDis = ""; pQty = "";
+        edtQuantity.setText("");
+        tvMsg.setText("");
+        MyApplication.getInstance().getDB().orderDao().deleteTable();
         init();
         setAdapters();
         addListner();
     }
 
-    private void checkPermission()
-    {
+    private void checkPermission() {
         MarshMallowPermissionListener permissionlistener = new MarshMallowPermissionListener() {
             @Override
             public void onPermissionGranted() {
@@ -66,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                checkPermission();
                 Toast.makeText(MainActivity.this, "MarshMallowPermission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
             }
         };
@@ -77,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        spnName.setPadding(0,10,40,10);
-        spnDis.setPadding(0,10,40,10);
+        spnName.setPadding(0, 10, 40, 10);
+        spnDis.setPadding(0, 10, 40, 10);
         mListProductData = new ArrayList<>();
         Log.d("data", "" + getJsonString());
         productModel = new Gson().fromJson(getJsonString(), ProductModel.class);
@@ -86,10 +97,6 @@ public class MainActivity extends AppCompatActivity {
             if (productModel.getProduct().size() > 0) {
                 mListProductData = productModel.getProduct();
             }
-        }
-
-        for (int i = 0; i < mListProductData.size(); i++) {
-            Log.d("listData", mListProductData.get(i).getName());
         }
     }
 
@@ -144,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         if (edtQuantity.getText().toString().equals("")) {
                             tvMsg.setText("Please Enter Quantity");
-                            tvMsg.setTextColor(ContextCompat.getColor(MainActivity.this,android.R.color.holo_red_light));
+                            tvMsg.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_red_light));
                             edtQuantity.setError("Please Enter Quantity");
                         } else {
                             addItemDialog();
@@ -155,7 +162,12 @@ public class MainActivity extends AppCompatActivity {
                 btnNext.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivity(new Intent(MainActivity.this,ViewOrderActivity.class));
+                        if(orderCount>0) {
+                            startActivity(new Intent(MainActivity.this, ViewOrderActivity.class));
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "Please insert item", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -178,20 +190,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                    pName=spnName.getSelectedItem().toString();
-                    pDis=spnDis.getSelectedItem().toString();
-                    pQty=edtQuantity.getText().toString();
+                pName = spnName.getSelectedItem().toString();
+                pDis = spnDis.getSelectedItem().toString();
+                pQty = edtQuantity.getText().toString();
+                orderCount++;
+                OrderData orderData = new OrderData();
+                orderData.setId(orderCount);
+                orderData.setPname(pName);
+                orderData.setPdis(pDis);
+                orderData.setQty(pQty);
+                MyApplication.getInstance().getDB().orderDao().insertAll(orderData);
 
-                    OrderData orderData=new OrderData();
-                    orderData.setPname(pName);
-                    orderData.setPdis(pDis);
-                    orderData.setQty(pQty);
 
-                    orderCount++;
-
-                    Toast.makeText(MainActivity.this, "Item Add Successfully", Toast.LENGTH_SHORT).show();
-                    tvMsg.setText(orderCount+" Item Add Successfully");
-                    tvMsg.setTextColor(ContextCompat.getColor(MainActivity.this,android.R.color.holo_green_dark));
+                Toast.makeText(MainActivity.this, "Item Add Successfully", Toast.LENGTH_SHORT).show();
+                tvMsg.setText(orderCount + " Item Add Successfully");
+                tvMsg.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_green_dark));
 
             }
         });

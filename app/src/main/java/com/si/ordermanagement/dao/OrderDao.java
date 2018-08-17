@@ -29,4 +29,7 @@ public interface OrderDao {
 
     @Delete
     void delete(OrderData orderData);
+
+    @Query("DELETE FROM `order`")
+    public void deleteTable();
 }

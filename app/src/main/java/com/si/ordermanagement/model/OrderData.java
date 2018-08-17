@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 public class OrderData {
 
     @ColumnInfo(name = "id")
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     private int id;
     @ColumnInfo(name = "pname")
     private String pname;

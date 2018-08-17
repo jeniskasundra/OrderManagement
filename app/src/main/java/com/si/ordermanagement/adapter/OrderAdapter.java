@@ -35,7 +35,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull OrderAdapter.ViewHolder viewHolder, int i) {
         final OrderData orderData = orderDataList.get(i);
-        viewHolder.tvPNo.setText(orderData.getId());
+        viewHolder.tvPNo.setText(String.valueOf(orderData.getId()));
         viewHolder.tvPName.setText(orderData.getPname());
         viewHolder.tvPDis.setText(orderData.getPdis());
         viewHolder.tvPQty.setText(orderData.getQty());
