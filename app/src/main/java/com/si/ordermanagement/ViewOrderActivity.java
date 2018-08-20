@@ -1,10 +1,12 @@
 package com.si.ordermanagement;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -13,6 +15,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -37,37 +40,41 @@ public class ViewOrderActivity extends AppCompatActivity {
             imgBtnShareMore;
     private TextView tvDate;
     private File finalImagePath;
+    private Toolbar toolbar;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_order);
-
         bindView();
         init();
         setAdapters();
         addListner();
-
+        showProgressDialog();
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                takeScreenShot();
+                new SaveImageAsync().execute();
             }
         }, 1500);
 
     }
 
     private void bindView() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("View Order");
+        setSupportActionBar(toolbar);
         rvOrder = (RecyclerView) findViewById(R.id.rvOrder);
         imgBtnWhatsapp = (ImageButton) findViewById(R.id.imgBtnWhatsapp);
         imgBtnShareMore = (ImageButton) findViewById(R.id.imgBtnShareMore);
-        tvDate=(TextView) findViewById(R.id.tvDate);
+        tvDate = (TextView) findViewById(R.id.tvDate);
     }
 
 
     private void init() {
-        tvDate.setText("Order Date : "+getCurrentDate());
+        tvDate.setText("Order Date : " + getCurrentDate());
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
         SeparatorDecoration decoration = new SeparatorDecoration(this, Color.GRAY, 1.5f);
         rvOrder.addItemDecoration(decoration);
@@ -80,6 +87,12 @@ public class ViewOrderActivity extends AppCompatActivity {
     }
 
     private void addListner() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         imgBtnWhatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +103,7 @@ public class ViewOrderActivity extends AppCompatActivity {
         imgBtnShareMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    share();
+                share();
             }
         });
     }
@@ -99,8 +112,8 @@ public class ViewOrderActivity extends AppCompatActivity {
 
         NestedScrollView iv = (NestedScrollView) findViewById(R.id.scroll);
         Bitmap bitmap = Bitmap.createBitmap(
-                iv.getChildAt(0).getWidth()*2,
-                iv.getChildAt(0).getHeight()*2,
+                iv.getChildAt(0).getWidth() * 2,
+                iv.getChildAt(0).getHeight() * 2,
                 Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bitmap);
         c.scale(2.0f, 2.0f);
@@ -118,7 +131,7 @@ public class ViewOrderActivity extends AppCompatActivity {
             boolean success = folder.mkdir();
         }
         String path = folder.getAbsolutePath();
-        String fileName ="order_"+ System.currentTimeMillis() + ".jpg";// path where pdf will be stored
+        String fileName = "order_" + System.currentTimeMillis() + ".jpg";// path where pdf will be stored
 
 
         File myPath = new File(folder, fileName);
@@ -128,7 +141,7 @@ public class ViewOrderActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
-           finalImagePath = myPath;
+            finalImagePath = myPath;
 
         } catch (FileNotFoundException e) {
             Log.e("GREC", e.getMessage(), e);
@@ -138,8 +151,7 @@ public class ViewOrderActivity extends AppCompatActivity {
     }
 
 
-    private String getCurrentDate()
-    {
+    private String getCurrentDate() {
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
@@ -174,6 +186,40 @@ public class ViewOrderActivity extends AppCompatActivity {
         shareIntent.putExtra("android.intent.extra.STREAM",
                 Uri.fromFile(finalImagePath));
         startActivity(Intent.createChooser(shareIntent, "Share Order"));
+    }
+
+
+    public class SaveImageAsync extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            takeScreenShot();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dismissProgressDialog();
+        }
+    }
+
+
+    private void showProgressDialog() {
+        mProgressDialog = new ProgressDialog(ViewOrderActivity.this);
+        mProgressDialog.setMessage("Please wait");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        mProgressDialog.dismiss();
+        mProgressDialog = null;
     }
 
 

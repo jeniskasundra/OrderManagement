@@ -1,14 +1,19 @@
 package com.si.ordermanagement;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -44,21 +49,22 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter adapterSpnName, adapterSpnDis;
     private String pName = "", pDis = "", pQty = "";
     private int orderCount = 0;
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkPermission();
         bindView();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         orderCount = 0;
-        pName = ""; pDis = ""; pQty = "";
+        pName = "";
+        pDis = "";
+        pQty = "";
         edtQuantity.setText("");
         tvMsg.setText("");
         MyApplication.getInstance().getDB().orderDao().deleteTable();
@@ -67,29 +73,9 @@ public class MainActivity extends AppCompatActivity {
         addListner();
     }
 
-    private void checkPermission() {
-        MarshMallowPermissionListener permissionlistener = new MarshMallowPermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                checkPermission();
-                Toast.makeText(MainActivity.this, "MarshMallowPermission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
-            }
-        };
-        new MarshMallowPermission(MainActivity.this)
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [MarshMallowPermission]")
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .check();
-    }
-
     private void init() {
-        spnName.setPadding(0, 10, 40, 10);
-        spnDis.setPadding(0, 10, 40, 10);
+        spnName.setPadding(10, 20, 40, 20);
+        spnDis.setPadding(10, 20, 40, 20);
         mListProductData = new ArrayList<>();
         Log.d("data", "" + getJsonString());
         productModel = new Gson().fromJson(getJsonString(), ProductModel.class);
@@ -101,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindView() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Order Management");
+        setSupportActionBar(toolbar);
         spnName = (Spinner) findViewById(R.id.spnName);
         spnDis = (Spinner) findViewById(R.id.spnDis);
         edtQuantity = (EditText) findViewById(R.id.editQuantity);
@@ -149,8 +138,14 @@ public class MainActivity extends AppCompatActivity {
                 btnAddItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (edtQuantity.getText().toString().equals("")) {
-                            tvMsg.setText("Please Enter Quantity");
+                        hideSoftKeyboard(MainActivity.this);
+                        tvMsg.setText("");
+                        if (spnDis.getSelectedItem().toString().equals("--- Select ---")) {
+                            tvMsg.setText("Please select description.");
+                            tvMsg.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_red_light));
+                            Toast.makeText(MainActivity.this, "Please select description", Toast.LENGTH_SHORT).show();
+                        } else if (edtQuantity.getText().toString().equals("")) {
+                            tvMsg.setText("Please enter quantity.");
                             tvMsg.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_red_light));
                             edtQuantity.setError("Please Enter Quantity");
                         } else {
@@ -162,11 +157,10 @@ public class MainActivity extends AppCompatActivity {
                 btnNext.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(orderCount>0) {
-                            startActivity(new Intent(MainActivity.this, ViewOrderActivity.class));
-                        }
-                        else {
-                            Toast.makeText(MainActivity.this, "Please insert item", Toast.LENGTH_SHORT).show();
+                        if (orderCount > 0) {
+                            generateOrderDialog();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Please add item first", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -203,9 +197,38 @@ public class MainActivity extends AppCompatActivity {
 
 
                 Toast.makeText(MainActivity.this, "Item Add Successfully", Toast.LENGTH_SHORT).show();
-                tvMsg.setText(orderCount + " Item Add Successfully");
+                tvMsg.setText(orderCount + " Item added successfully.");
                 tvMsg.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.holo_green_dark));
 
+                pName = "";
+                pDis = "";
+                pQty = "";
+                edtQuantity.setText("");
+                spnName.setSelection(0);
+                spnDis.setSelection(0);
+
+
+            }
+        });
+        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        dialog.show();
+    }
+
+
+    private void generateOrderDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(
+                MainActivity.this, R.style.AppAlertDialog);
+        dialog.setTitle("Generate Order");
+        dialog.setMessage("Are you sure you want to generate order?");
+        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(MainActivity.this, ViewOrderActivity.class));
             }
         });
         dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -237,5 +260,29 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return writer.toString();
+    }
+
+    private void hideSoftKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }
