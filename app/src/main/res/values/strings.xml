@@ -1,34 +1,5 @@
 <resources>
-    <string name="app_name">OrderManagement</string>
-    <string name="order_management">Order Management</string>
+    <string name="app_name">Amul Order</string>
+    <string name="order_management">Amul Order</string>
     <string name="view_order">View Order</string>
-
-    <string-array name="proname">
-        <item>Basudi</item>
-        <item>Butter</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-        <item>Chocolate</item>
-
-
-    </string-array>
-
-    <string-array name="array_name">
-        <item>Array Item One</item>
-        <item>Array Item Two</item>
-        <item>Array Item Three</item>
-    </string-array>
-
 </resources>

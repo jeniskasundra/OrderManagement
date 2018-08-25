@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void bindView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Order Management");
+        toolbar.setTitle("Amul Order");
         setSupportActionBar(toolbar);
         spnName = (Spinner) findViewById(R.id.spnName);
         spnDis = (Spinner) findViewById(R.id.spnDis);

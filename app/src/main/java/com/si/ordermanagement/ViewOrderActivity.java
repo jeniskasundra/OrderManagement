@@ -125,13 +125,13 @@ public class ViewOrderActivity extends AppCompatActivity {
     }
 
     public void saveBitmap(Bitmap bitmap) {
-        File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Order Management/");
+        File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Amul Order/");
 
         if (!folder.exists()) {
             boolean success = folder.mkdir();
         }
         String path = folder.getAbsolutePath();
-        String fileName = "order_" + System.currentTimeMillis() + ".jpg";// path where pdf will be stored
+        String fileName = "Amul_order_" + System.currentTimeMillis() + ".jpg";// path where pdf will be stored
 
 
         File myPath = new File(folder, fileName);

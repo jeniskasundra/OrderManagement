@@ -14,6 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:title="@string/app_name"
+        app:navigationIcon="@mipmap/ic_launcher"
         app:titleTextColor="@android:color/white" />
 
     <ScrollView
